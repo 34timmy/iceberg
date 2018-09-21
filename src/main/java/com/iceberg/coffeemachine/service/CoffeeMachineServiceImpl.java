@@ -15,12 +15,8 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class CoffeeMachineServiceImpl implements CoffeeMachineService {
-
-
-    private int brewedCoffee = 0;
 
     private CoffeeMachine coffeeMachine;
 
@@ -29,6 +25,12 @@ public class CoffeeMachineServiceImpl implements CoffeeMachineService {
         this.coffeeMachine = coffeeMachine;
     }
 
+    /**
+     * create coffee
+     *
+     * @param coffeeTypeString coffee type
+     * @return if ok -> response with CoffeeMachine in body, else -> response with error message
+     */
     @Override
     public ResponseEntity doCoffee(String coffeeTypeString) {
         CoffeeType coffeeType = CoffeeType.valueOf(coffeeTypeString);
@@ -39,12 +41,15 @@ public class CoffeeMachineServiceImpl implements CoffeeMachineService {
 
             switch (coffeeType) {
                 case ESPRESSO:
+//                    some logic
                     coffeeMachine.setCupsBeforeClean(coffeeMachine.getCupsBeforeClean() - 1);
                     break;
                 case AMERICANO:
+//                    some logic
                     coffeeMachine.setCupsBeforeClean(coffeeMachine.getCupsBeforeClean() - 1);
                     break;
                 case CAPUCHINO:
+//                    some logic
                     coffeeMachine.setCupsBeforeClean(coffeeMachine.getCupsBeforeClean() - 1);
                     break;
                 default:
@@ -60,6 +65,14 @@ public class CoffeeMachineServiceImpl implements CoffeeMachineService {
         }
     }
 
+    /**
+     * update resources of coffee machine
+     *
+     * @param beans - quantity to be loaded
+     * @param milk  - quantity to be loaded
+     * @param water - quantity to be loaded
+     * @return if ok -> response with CoffeeMachine in body, else -> response with error message
+     */
     @Override
     public ResponseEntity update(int beans, int milk, int water) {
         String msg = "";
@@ -82,14 +95,19 @@ public class CoffeeMachineServiceImpl implements CoffeeMachineService {
             coffeeMachine.setLoadedMilk(coffeeMachine.getLoadedMilk() + milk);
         }
         if (msg.isEmpty()) {
-            return ResponseEntity.ok(coffeeMachine.toString());
+            return ResponseEntity.ok(coffeeMachine);
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(msg);
         }
 
     }
 
-
+    /**
+     * check remaining cups before cleaning
+     *
+     * @param coffeeMachine
+     * @throws CleanMachineException if remaining cups = 0
+     */
     @Override
     public void isClean(CoffeeMachine coffeeMachine) throws CleanMachineException {
         if (coffeeMachine.getCupsBeforeClean() == 0) {
@@ -97,15 +115,26 @@ public class CoffeeMachineServiceImpl implements CoffeeMachineService {
         }
     }
 
+    /**
+     * set cups before cleaning to default value
+     */
     public void clean() {
         coffeeMachine.setDefaultCupsBeforeClean();
     }
 
-
+    /**
+     * status of CoffeeMachine
+     */
     public CoffeeMachine status() {
         return coffeeMachine;
     }
 
+    /**
+     * check is it enough resources for coffee producing
+     *
+     * @param coffee
+     * @throws NotEnoughException if not enough resources for coffee producing
+     */
     @Override
     public void isEnough(Coffee coffee) throws NotEnoughException {
         String msg = "";
@@ -135,10 +164,25 @@ public class CoffeeMachineServiceImpl implements CoffeeMachineService {
         }
     }
 
+    /**
+     * template message for 'update' method
+     *
+     * @param resource updated resource
+     * @param level    exceeding number of resources
+     * @return String
+     */
     private String notEnoughCapacity(String resource, int level) {
         return String.format("Capacity of %s's container is less on: %d.\n", resource, level);
     }
 
+    /**
+     * template for 'isEnough' method
+     *
+     * @param resource checked resource
+     * @param loaded   resource quantity in coffee machine
+     * @param needed   resource quantity needed for producing coffee
+     * @return String
+     */
     private String notEnoughResourceMsg(String resource, int loaded, int needed) {
         return String.format(" - Current %1$s: %2$d mg/ ml.\n" +
                 "   Needed %1$s: %3$d ml.\n" +

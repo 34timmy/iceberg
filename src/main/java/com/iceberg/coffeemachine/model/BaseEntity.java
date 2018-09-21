@@ -7,9 +7,6 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@ToString
-@EqualsAndHashCode
-@AllArgsConstructor
 public class BaseEntity {
 
     protected String id;

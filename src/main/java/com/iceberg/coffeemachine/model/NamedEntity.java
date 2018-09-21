@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class NamedEntity extends BaseEntity {
 
     @NotBlank
@@ -16,5 +17,4 @@ public class NamedEntity extends BaseEntity {
         super();
         this.name = name;
     }
-
 }

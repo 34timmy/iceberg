@@ -13,7 +13,6 @@ import java.util.Map;
 @Getter
 @Setter
 @NoArgsConstructor
-@Slf4j
 @Component
 public class CoffeeMachine extends NamedEntity {
 
